@@ -119,6 +119,9 @@ body {
     justify-content: center;
     animation: open-anim 0.13s ease-in;
     overflow: hidden;
+    & img {
+      max-width: 100%;
+    }
     & > button {
       outline: none;
       border: none;
