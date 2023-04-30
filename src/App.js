@@ -62,7 +62,8 @@ function App() {
         console.log('binarizer', binarizer)
         bitmap = new ZXing.BinaryBitmap(binarizer);
         console.log('bitmap', bitmap)
-        console.log(JSON.stringify(ZXing.PDF417.PDF417Reader.decode(bitmap, null, false), null, 4));
+        const d = (JSON.stringify(ZXing.PDF417.PDF417Reader.decode(bitmap, null, false), null, 4));
+        alert(JSON.stringify(d))
     } catch (err) {
         console.log('err', err);
     }
