@@ -2,6 +2,9 @@
 import './App.scss';
 import React, { useState, useRef } from "react";
 import {Camera} from "react-camera-pro";
+import {  } from '@zxing/library';
+
+let ZXing = window['ZXing'];
 
 
 const sizes = [
@@ -16,6 +19,65 @@ function App() {
   const [numberOfCameras, setNumberOfCameras] = useState(0);
   const [preview, setPreview] = useState(false)
   const [aspectRatio, setAspectRatio] = useState('cover');
+
+  const decodeFun = (el) => {
+    if(!ZXing) ZXing = window['ZXing'];
+    console.log(ZXing, window)
+    if(ZXing) {
+      const codeReader = new ZXing.BrowserPDF417Reader();
+      const img = el.cloneNode(true);
+
+      codeReader.decodeFromImage(img)
+        .then(result => {
+          console.log(result);
+        })
+        .catch(err => {
+          console.error(err);
+        });
+
+      console.log(`Started decode for image from ${img.src}`)
+    }
+    
+  };
+
+  const doScan = (e)  =>{
+    const image = e.target;
+    var
+            canvas = document.createElement('canvas'),
+            canvas_context = canvas.getContext('2d'),
+            source,
+            binarizer,
+            bitmap;
+    canvas.width = image.naturalWidth;
+    canvas.height = image.naturalHeight;
+    console.log('image', image);
+    canvas_context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    try {
+        if(!ZXing) ZXing = window['ZXing'];
+        console.log('ZXing', ZXing, window)
+        source = new ZXing.BitmapLuminanceSource(canvas_context, image);
+        console.log('source', source)
+        binarizer = new ZXing.Common.HybridBinarizer(source);
+        console.log('binarizer', binarizer)
+        bitmap = new ZXing.BinaryBitmap(binarizer);
+        console.log('bitmap', bitmap)
+        console.log(JSON.stringify(ZXing.PDF417.PDF417Reader.decode(bitmap, null, false), null, 4));
+    } catch (err) {
+        console.log('err', err);
+    }
+}
+
+
+  const onPhotoTake =  () => {
+    const image  = camera.current.takePhoto();
+    setImage(image)
+    const el = document.createElement('IMG');
+    el.src = image;
+    // decodeFun(el)
+    
+
+  }
   return (
     <div className='app'>
       <div className='camera'>
@@ -38,7 +100,7 @@ function App() {
           <div>
           <button 
             className='shutter-btn' 
-            onClick={() => setImage(camera.current.takePhoto())}>
+            onClick={onPhotoTake}>
               <span />
             </button>
           </div>
@@ -46,7 +108,7 @@ function App() {
             {image ? <button 
             className='list-btn'
             onClick={() => setPreview(true)}>
-              <img alt='Photos' src={image}/>
+              <img alt='Photos' src={image} onLoad={doScan}/>
             </button> : <button></button>}
           
           </div>

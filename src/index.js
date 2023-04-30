@@ -14,3 +14,15 @@ root.render(
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();
+
+
+// function addScript() {
+//   const script = document.createElement("script");
+
+//     script.src = "https://unpkg.com/@zxing/library@latest";
+//     script.async = true;
+
+//     document.body.appendChild(script);
+// }
+
+// addScript();
