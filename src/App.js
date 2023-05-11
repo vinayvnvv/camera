@@ -3,8 +3,7 @@ import './App.scss';
 import React, { useState, useRef } from "react";
 import {Camera} from "react-camera-pro";
 import {  } from '@zxing/library';
-
-let ZXing = window['ZXing'];
+import card from './assets/05.png';
 
 
 const sizes = [
@@ -20,61 +19,33 @@ function App() {
   const [preview, setPreview] = useState(false)
   const [aspectRatio, setAspectRatio] = useState('cover');
 
-  const decodeFun = (el) => {
-    if(!ZXing) ZXing = window['ZXing'];
-    console.log(ZXing, window)
-    if(ZXing) {
-      const codeReader = new ZXing.BrowserPDF417Reader();
-      const img = el.cloneNode(true);
 
-      codeReader.decodeFromImage(img)
-        .then(result => {
-          console.log(result);
-        })
-        .catch(err => {
-          console.error(err);
-        });
-
-      console.log(`Started decode for image from ${img.src}`)
+  const getARClass = () => {
+    const classes = ['ar'];
+    if(aspectRatio === 'cover') {
+      classes.push('cover');
     }
-    
-  };
+    return classes.join(' ');
+  }
 
-  const doScan = (e)  =>{
-    const image = e.target;
-    var
-            canvas = document.createElement('canvas'),
-            canvas_context = canvas.getContext('2d'),
-            source,
-            binarizer,
-            bitmap;
-    canvas.width = image.naturalWidth;
-    canvas.height = image.naturalHeight;
-    console.log('image', image);
-    canvas_context.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-    try {
-        if(!ZXing) ZXing = window['ZXing'];
-        console.log('ZXing', ZXing, window)
-        source = new ZXing.BitmapLuminanceSource(canvas_context, image);
-        console.log('source', source)
-        binarizer = new ZXing.Common.HybridBinarizer(source);
-        console.log('binarizer', binarizer)
-        bitmap = new ZXing.BinaryBitmap(binarizer);
-        console.log('bitmap', bitmap)
-        const d = (JSON.stringify(ZXing.PDF417.PDF417Reader.decode(bitmap, null, false), null, 4));
-        alert(JSON.stringify(d))
-    } catch (err) {
-        console.log('err', err);
+  const getARStyle = () => {
+    if(aspectRatio === 'cover') {
+      return {
+        display: 'none',
+      }
+    } else {
+      return {
+        aspectRatio,
+      }
     }
-}
+  }
 
 
   const onPhotoTake =  () => {
     const image  = camera.current.takePhoto();
     setImage(image)
-    const el = document.createElement('IMG');
-    el.src = image;
+    // const el = document.createElement('IMG');
+    // el.src = 'https://zxing-js.github.io/library/resources/blackbox/pdf417-2/05.png';
     // decodeFun(el)
     
 
@@ -82,7 +53,10 @@ function App() {
   return (
     <div className='app'>
       <div className='camera'>
-        <Camera ref={camera} numberOfCamerasCallback={setNumberOfCameras} aspectRatio={aspectRatio}/>
+        <Camera ref={camera} numberOfCamerasCallback={setNumberOfCameras} 
+        // aspectRatio={aspectRatio}
+        />
+        <div className={getARClass()} style={getARStyle()}/>
       </div>
       <div className='bottom-bar'>
         <div className='tabs'>
@@ -109,7 +83,9 @@ function App() {
             {image ? <button 
             className='list-btn'
             onClick={() => setPreview(true)}>
-              <img alt='Photos' src={image} onLoad={doScan}/>
+              <img alt='Photos' 
+                  src={image} 
+                  />
             </button> : <button></button>}
           
           </div>

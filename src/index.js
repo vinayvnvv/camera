@@ -16,13 +16,13 @@ root.render(
 reportWebVitals();
 
 
-// function addScript() {
-//   const script = document.createElement("script");
+function addScript() {
+  const script = document.createElement("script");
 
-//     script.src = "https://unpkg.com/@zxing/library@latest";
-//     script.async = true;
+    script.src = "https://unpkg.com/@zxing/library@latest";
+    script.async = true;
 
-//     document.body.appendChild(script);
-// }
+    document.body.appendChild(script);
+}
 
-// addScript();
+addScript();
